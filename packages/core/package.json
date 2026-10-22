@@ -1,0 +1,78 @@
+{
+  "name": "@verifact/core",
+  "version": "0.1.0",
+  "description": "Framework-free provenance engine: binds claims to SHA-256 byte spans of primary sources, detects hallucinated or drifted values, signs ECDSA P-256 evidence certificates and hands verified facts to Assentra and Pactline. Node 20+, edge runtimes and browsers.",
+  "license": "MIT",
+  "type": "module",
+  "author": {
+    "name": "Sagar Pinninti",
+    "url": "https://github.com/isagarpinninti"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isagarpinninti/verifact.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/isagarpinninti/verifact#readme",
+  "bugs": {
+    "url": "https://github.com/isagarpinninti/verifact/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "keywords": [
+    "hallucination-detection",
+    "provenance",
+    "evidence",
+    "claims",
+    "fact-checking",
+    "citations",
+    "ecdsa",
+    "web-crypto",
+    "ai-safety",
+    "assentra",
+    "pactline"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "zod": "^3.23.0 || ^4.0.0"
+  },
+  "devDependencies": {
+    "@assentra/server": "^0.1.0",
+    "@pactline/core": "^0.1.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0",
+    "zod": "^4.6.7"
+  }
+}

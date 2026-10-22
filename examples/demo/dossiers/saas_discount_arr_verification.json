@@ -1,0 +1,168 @@
+{
+  "id": "saas_discount_arr_verification",
+  "name": "SaaS Discount and ARR Verification",
+  "version": "1.0.0",
+  "category": "Sales",
+  "description": "Verifies a deal summary against the CRM order form and the usage log. Feeds Assentra discount_approval and Pactline autonomous_data_enrichment_api.",
+  "targetBridge": {
+    "assentraWorkflowId": "discount_approval",
+    "pactlineContractId": "autonomous_data_enrichment_api",
+    "fieldMappings": {
+      "c_account": "accountName",
+      "c_list": "listPriceUsd",
+      "c_discount": "discountPct",
+      "c_term": "termMonths",
+      "c_terms": "paymentTerms",
+      "c_sponsor": "executiveSponsor"
+    },
+    "telemetryMappings": {
+      "c_units": "enrichmentUnits",
+      "c_latency": "avgLatencyMs",
+      "c_errors": "errors"
+    }
+  },
+  "sources": [
+    {
+      "id": "crm",
+      "title": "CRM order form OF-4410",
+      "sourceType": "signed_contract",
+      "capturedAtIso": "2026-10-14T09:12:41Z",
+      "content": "ORDER FORM OF-4410\nAccount: Acme\nList Price (ARR): $240,000\nDiscount: 20%\nTerm: 36 months\nPayment Terms: net60\nExecutive Sponsor: true\n",
+      "expectedSha256": "82d285b2670b88d77f14e818d67bf8f18e20876093e19bf741cffec76096a986"
+    },
+    {
+      "id": "usage",
+      "title": "Enrichment API usage log",
+      "sourceType": "prometheus_log",
+      "capturedAtIso": "2026-10-14T09:12:41Z",
+      "content": "ts=2026-10-14T12:00:00Z enrichment_units 22500\nts=2026-10-14T12:00:00Z avg_latency_ms 220\nts=2026-10-14T12:00:00Z errors 40\n",
+      "expectedSha256": "da3ccf2a29b43de74f8593dd58fcbee228bfc74c5b6d7c93a6203c3d39d3b6e5"
+    }
+  ],
+  "claims": [
+    {
+      "id": "c_account",
+      "label": "Account",
+      "fieldKey": "accountName",
+      "valueType": "string",
+      "claimedValue": "Acme",
+      "citation": {
+        "sourceId": "crm",
+        "excerpt": "Account: Acme",
+        "required": true,
+        "valueAfter": "Account:"
+      }
+    },
+    {
+      "id": "c_list",
+      "label": "List price / ARR (USD)",
+      "fieldKey": "listPriceUsd",
+      "valueType": "number",
+      "claimedValue": 240000,
+      "citation": {
+        "sourceId": "crm",
+        "excerpt": "List Price (ARR): $240,000",
+        "tolerancePct": 1,
+        "required": true,
+        "valueAfter": "List Price (ARR):"
+      }
+    },
+    {
+      "id": "c_discount",
+      "label": "Discount (%)",
+      "fieldKey": "discountPct",
+      "valueType": "number",
+      "claimedValue": 20,
+      "citation": {
+        "sourceId": "crm",
+        "excerpt": "Discount: 20%",
+        "required": true,
+        "valueAfter": "Discount:"
+      }
+    },
+    {
+      "id": "c_term",
+      "label": "Term (months)",
+      "fieldKey": "termMonths",
+      "valueType": "string",
+      "claimedValue": "36",
+      "citation": {
+        "sourceId": "crm",
+        "excerpt": "Term: 36 months",
+        "required": true,
+        "valueAfter": "Term:",
+        "valueEnd": " months"
+      }
+    },
+    {
+      "id": "c_terms",
+      "label": "Payment terms",
+      "fieldKey": "paymentTerms",
+      "valueType": "string",
+      "claimedValue": "net60",
+      "citation": {
+        "sourceId": "crm",
+        "excerpt": "Payment Terms: net60",
+        "required": true,
+        "valueAfter": "Payment Terms:"
+      }
+    },
+    {
+      "id": "c_sponsor",
+      "label": "Executive sponsor",
+      "fieldKey": "executiveSponsor",
+      "valueType": "boolean",
+      "claimedValue": true,
+      "citation": {
+        "sourceId": "crm",
+        "excerpt": "Executive Sponsor: true",
+        "required": true,
+        "valueAfter": "Executive Sponsor:"
+      }
+    },
+    {
+      "id": "c_units",
+      "label": "Enrichment units",
+      "fieldKey": "enrichmentUnits",
+      "valueType": "number",
+      "claimedValue": 22500,
+      "citation": {
+        "sourceId": "usage",
+        "excerpt": "enrichment_units 22500",
+        "required": true,
+        "valueAfter": "enrichment_units"
+      }
+    },
+    {
+      "id": "c_latency",
+      "label": "Avg latency (ms)",
+      "fieldKey": "avgLatencyMs",
+      "valueType": "number",
+      "claimedValue": 220,
+      "citation": {
+        "sourceId": "usage",
+        "excerpt": "avg_latency_ms 220",
+        "required": true,
+        "valueAfter": "avg_latency_ms"
+      }
+    },
+    {
+      "id": "c_errors",
+      "label": "Failed calls",
+      "fieldKey": "errors",
+      "valueType": "number",
+      "claimedValue": 40,
+      "citation": {
+        "sourceId": "usage",
+        "excerpt": "errors 40",
+        "required": true,
+        "valueAfter": "errors"
+      }
+    }
+  ],
+  "policies": {
+    "minEpistemicScore": 100,
+    "allowWithinTolerance": true,
+    "requireAllSourcesHashed": false
+  }
+}

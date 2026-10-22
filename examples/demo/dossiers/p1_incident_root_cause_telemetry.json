@@ -1,0 +1,122 @@
+{
+  "id": "p1_incident_root_cause_telemetry",
+  "name": "P1 Incident Root-Cause Telemetry",
+  "version": "1.0.0",
+  "category": "SRE",
+  "description": "Verifies an AI incident summary against the Prometheus alert export and the approved runbook. Feeds Assentra p1_traffic_failover.",
+  "targetBridge": {
+    "assentraWorkflowId": "p1_traffic_failover",
+    "fieldMappings": {
+      "c_incident": "incidentId",
+      "c_service": "affectedService",
+      "c_rpo": "maxAllowedDataLossSec",
+      "c_strategy": "strategy",
+      "c_status": "notifyStatusPage"
+    }
+  },
+  "sources": [
+    {
+      "id": "alerts",
+      "title": "Alertmanager and Prometheus export",
+      "sourceType": "prometheus_log",
+      "capturedAtIso": "2026-10-14T09:12:41Z",
+      "content": "# alertmanager export\nALERT HighErrorRate firing incident=INC-4821 service=checkout-api region=eu-central-1\nts=2026-10-14T09:12:41Z rpo_budget_seconds{service=\"checkout-api\"} 5\nts=2026-10-14T09:12:41Z replication_lag_seconds{service=\"checkout-api\"} 12\nts=2026-10-14T09:12:41Z error_rate_ratio{service=\"checkout-api\"} 0.37\nstatus_page_notified: true\n",
+      "expectedSha256": "ba8d6b2976b6b92a6cf07c87a7c95a951b72844ad4c4ff1d629ae21159c3e164"
+    },
+    {
+      "id": "runbook",
+      "title": "Runbook RB-17",
+      "sourceType": "signed_contract",
+      "capturedAtIso": "2026-10-14T09:12:41Z",
+      "content": "RUNBOOK RB-17\nApproved strategy: multi_region_drain\nOwner: SRE on-call\n",
+      "expectedSha256": "2685c71ed28b45bf5f57cc3b723f6628023a90bbc96d8b1a7481d600046cdca6"
+    }
+  ],
+  "claims": [
+    {
+      "id": "c_incident",
+      "label": "Incident id",
+      "fieldKey": "incidentId",
+      "valueType": "string",
+      "claimedValue": "INC-4821",
+      "citation": {
+        "sourceId": "alerts",
+        "excerpt": "incident=INC-4821 service=checkout-api",
+        "required": true,
+        "valueAfter": "incident=",
+        "valueEnd": " "
+      }
+    },
+    {
+      "id": "c_service",
+      "label": "Affected service",
+      "fieldKey": "affectedService",
+      "valueType": "string",
+      "claimedValue": "checkout-api",
+      "citation": {
+        "sourceId": "alerts",
+        "excerpt": "service=checkout-api region=eu-central-1",
+        "required": true,
+        "valueAfter": "service=",
+        "valueEnd": " "
+      }
+    },
+    {
+      "id": "c_rpo",
+      "label": "Max allowed data loss (s)",
+      "fieldKey": "maxAllowedDataLossSec",
+      "valueType": "number",
+      "claimedValue": 5,
+      "citation": {
+        "sourceId": "alerts",
+        "excerpt": "rpo_budget_seconds{service=\"checkout-api\"} 5",
+        "required": true,
+        "valueAfter": "rpo_budget_seconds{service=\"checkout-api\"}"
+      }
+    },
+    {
+      "id": "c_lag",
+      "label": "Replication lag (s)",
+      "fieldKey": "replicationLagSec",
+      "valueType": "number",
+      "claimedValue": 12,
+      "citation": {
+        "sourceId": "alerts",
+        "excerpt": "replication_lag_seconds{service=\"checkout-api\"} 12",
+        "required": true,
+        "valueAfter": "replication_lag_seconds{service=\"checkout-api\"}"
+      }
+    },
+    {
+      "id": "c_strategy",
+      "label": "Approved strategy",
+      "fieldKey": "strategy",
+      "valueType": "string",
+      "claimedValue": "multi_region_drain",
+      "citation": {
+        "sourceId": "runbook",
+        "excerpt": "Approved strategy: multi_region_drain",
+        "required": true,
+        "valueAfter": "Approved strategy:"
+      }
+    },
+    {
+      "id": "c_status",
+      "label": "Status page notified",
+      "fieldKey": "notifyStatusPage",
+      "valueType": "boolean",
+      "claimedValue": true,
+      "citation": {
+        "sourceId": "alerts",
+        "excerpt": "status_page_notified: true",
+        "required": true,
+        "valueAfter": "status_page_notified:"
+      }
+    }
+  ],
+  "policies": {
+    "minEpistemicScore": 100,
+    "allowWithinTolerance": false,
+    "requireAllSourcesHashed": false
+  }
+}

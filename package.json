@@ -1,0 +1,64 @@
+{
+  "name": "verifact",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "dev:server": "node packages/cli/dist/cli.js studio examples/demo --port 4319",
+    "build:packages": "npm run build -w @verifact/core && npm run build -w @verifact/react",
+    "build:studio": "STUDIO_EXPORT=1 next build && node scripts/copy-studio.mjs",
+    "build": "npm run build:packages && npm run build:studio && npm run build -w @verifact/cli",
+    "test": "npm run test -w @verifact/core && npm run test -w @verifact/cli",
+    "typecheck": "tsc --noEmit && npm run typecheck -w @verifact/core && npm run typecheck -w @verifact/cli",
+    "lint": "eslint .",
+    "smoke": "node scripts/smoke.mjs",
+    "ci": "npm run build:packages && npm run lint && npm run typecheck && npm test && npm run build && npm run smoke"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.60.0",
+    "next": "16.4.2",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "tailwind-merge": "^3.7.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "^16.4.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "description": "Verify AI-generated claims against the exact bytes of their sources, block hallucinations, and issue signed evidence certificates anyone can check offline.",
+  "author": {
+    "name": "Sagar Pinninti",
+    "url": "https://github.com/isagarpinninti"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isagarpinninti/verifact.git"
+  },
+  "homepage": "https://github.com/isagarpinninti/verifact#readme",
+  "bugs": {
+    "url": "https://github.com/isagarpinninti/verifact/issues"
+  },
+  "license": "MIT",
+  "keywords": [
+    "hallucination-detection",
+    "provenance",
+    "evidence",
+    "fact-checking",
+    "citations",
+    "ai-safety",
+    "digital-signature",
+    "audit-log",
+    "typescript"
+  ]
+}

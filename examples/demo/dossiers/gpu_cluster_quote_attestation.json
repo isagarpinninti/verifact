@@ -1,0 +1,165 @@
+{
+  "id": "gpu_cluster_quote_attestation",
+  "name": "GPU Cluster Quote Attestation",
+  "version": "1.0.0",
+  "category": "Procurement",
+  "description": "Verifies a vendor GPU quote and benchmark log, including the GDPR residency attestation. Feeds Assentra gpu_cluster_provisioning and Pactline b2b_gpu_burst_lease.",
+  "targetBridge": {
+    "assentraWorkflowId": "gpu_cluster_provisioning",
+    "pactlineContractId": "b2b_gpu_burst_lease",
+    "fieldMappings": {
+      "c_region": "region",
+      "c_model": "gpuModel",
+      "c_nodes": "nodeCount",
+      "c_residency": "dataResidencyStrict",
+      "c_ttl": "autoTerminateHours"
+    },
+    "telemetryMappings": {
+      "c_gpuhours": "gpuHours",
+      "c_p95": "p95LatencyMs",
+      "c_queue": "queueDepth"
+    }
+  },
+  "sources": [
+    {
+      "id": "quote",
+      "title": "Signed vendor quote Q-7731",
+      "sourceType": "signed_contract",
+      "capturedAtIso": "2026-10-14T09:12:41Z",
+      "content": "QUOTE Q-7731 (signed)\nGPU Model: H100_80GB\nNodes: 8\nRegion: eu-central-1\nHourly Rate: $3.20 per GPU-hour\nAuto-terminate: 72 hours\nGDPR Data Residency Attestation: true\nReserved GPU-hours: 120\n",
+      "expectedSha256": "cf8a81bdf1563ad7bdbd00c5c2870229935c5d6231787cf6bb826494aabdb97b"
+    },
+    {
+      "id": "bench",
+      "title": "Vendor benchmark log",
+      "sourceType": "prometheus_log",
+      "capturedAtIso": "2026-10-14T09:12:41Z",
+      "content": "ts=2026-10-14T10:00:00Z p95_latency_ms 180\nts=2026-10-14T10:00:00Z queue_depth 12\n",
+      "expectedSha256": "6d979e92994ace58b475b8bd009577d3062fc7dd5d81e6f1e29b58a961fb0046"
+    }
+  ],
+  "claims": [
+    {
+      "id": "c_model",
+      "label": "GPU model",
+      "fieldKey": "gpuModel",
+      "valueType": "string",
+      "claimedValue": "H100_80GB",
+      "citation": {
+        "sourceId": "quote",
+        "excerpt": "GPU Model: H100_80GB",
+        "required": true,
+        "valueAfter": "GPU Model:"
+      }
+    },
+    {
+      "id": "c_nodes",
+      "label": "Node count",
+      "fieldKey": "nodeCount",
+      "valueType": "number",
+      "claimedValue": 8,
+      "citation": {
+        "sourceId": "quote",
+        "excerpt": "Nodes: 8",
+        "required": true,
+        "valueAfter": "Nodes:"
+      }
+    },
+    {
+      "id": "c_region",
+      "label": "Region",
+      "fieldKey": "region",
+      "valueType": "string",
+      "claimedValue": "eu-central-1",
+      "citation": {
+        "sourceId": "quote",
+        "excerpt": "Region: eu-central-1",
+        "required": true,
+        "valueAfter": "Region:"
+      }
+    },
+    {
+      "id": "c_rate",
+      "label": "Hourly rate (USD / GPU-hour)",
+      "fieldKey": "hourlyRateUsd",
+      "valueType": "number",
+      "claimedValue": 3.2,
+      "citation": {
+        "sourceId": "quote",
+        "excerpt": "Hourly Rate: $3.20 per GPU-hour",
+        "required": true,
+        "valueAfter": "Hourly Rate:"
+      }
+    },
+    {
+      "id": "c_ttl",
+      "label": "Auto-terminate (hours)",
+      "fieldKey": "autoTerminateHours",
+      "valueType": "number",
+      "claimedValue": 72,
+      "citation": {
+        "sourceId": "quote",
+        "excerpt": "Auto-terminate: 72 hours",
+        "required": true,
+        "valueAfter": "Auto-terminate:"
+      }
+    },
+    {
+      "id": "c_residency",
+      "label": "GDPR residency attested",
+      "fieldKey": "dataResidencyStrict",
+      "valueType": "boolean",
+      "claimedValue": true,
+      "citation": {
+        "sourceId": "quote",
+        "excerpt": "GDPR Data Residency Attestation: true",
+        "required": true,
+        "valueAfter": "GDPR Data Residency Attestation:"
+      }
+    },
+    {
+      "id": "c_gpuhours",
+      "label": "Reserved GPU-hours",
+      "fieldKey": "gpuHours",
+      "valueType": "number",
+      "claimedValue": 120,
+      "citation": {
+        "sourceId": "quote",
+        "excerpt": "Reserved GPU-hours: 120",
+        "required": true,
+        "valueAfter": "Reserved GPU-hours:"
+      }
+    },
+    {
+      "id": "c_p95",
+      "label": "p95 latency (ms)",
+      "fieldKey": "p95LatencyMs",
+      "valueType": "number",
+      "claimedValue": 180,
+      "citation": {
+        "sourceId": "bench",
+        "excerpt": "p95_latency_ms 180",
+        "required": true,
+        "valueAfter": "p95_latency_ms"
+      }
+    },
+    {
+      "id": "c_queue",
+      "label": "Queue depth",
+      "fieldKey": "queueDepth",
+      "valueType": "number",
+      "claimedValue": 12,
+      "citation": {
+        "sourceId": "bench",
+        "excerpt": "queue_depth 12",
+        "required": true,
+        "valueAfter": "queue_depth"
+      }
+    }
+  ],
+  "policies": {
+    "minEpistemicScore": 100,
+    "allowWithinTolerance": true,
+    "requireAllSourcesHashed": false
+  }
+}

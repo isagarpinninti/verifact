@@ -1,0 +1,152 @@
+{
+  "id": "soc2_security_audit_evidence",
+  "name": "SOC 2 Security Audit Evidence",
+  "version": "1.0.0",
+  "category": "SecOps",
+  "description": "Verifies IAM clearance and hardware-MFA evidence plus a threat-feed delivery log. Feeds Assentra zero_trust_onboarding and Pactline secops_threat_feed_exchange.",
+  "targetBridge": {
+    "assentraWorkflowId": "zero_trust_onboarding",
+    "pactlineContractId": "secops_threat_feed_exchange",
+    "fieldMappings": {
+      "c_name": "engineerName",
+      "c_tier": "hardwareTier",
+      "c_proddb": "prodDatabaseAccess",
+      "c_role": "awsIamRole",
+      "c_yubikey": "yubikeyHardwareMfa"
+    },
+    "telemetryMappings": {
+      "c_indicators": "indicators",
+      "c_fresh": "freshnessSec",
+      "c_fp": "falsePositivePct"
+    }
+  },
+  "sources": [
+    {
+      "id": "iam",
+      "title": "IAM snapshot 2026-10-14",
+      "sourceType": "iam_snapshot",
+      "capturedAtIso": "2026-10-14T09:12:41Z",
+      "content": "IAM SNAPSHOT 2026-10-14\nprincipal: Ananya\nrole: PowerUser\nhardware_tier: MacBook_Pro_M4_Max\nprod_db_access: false\nyubikey_mfa: true\n",
+      "expectedSha256": "9869b6095de899cbfc90f9794180b566673c27d36ebbd0d81a9051940dea96cd"
+    },
+    {
+      "id": "feed",
+      "title": "Threat-feed delivery log",
+      "sourceType": "prometheus_log",
+      "capturedAtIso": "2026-10-14T09:12:41Z",
+      "content": "ts=2026-10-14T11:00:00Z indicators_delivered 250000\nts=2026-10-14T11:00:00Z feed_freshness_seconds 45\nts=2026-10-14T11:00:00Z false_positive_pct 0.8\n",
+      "expectedSha256": "7a62f79737798993802075a075e03fe1654b3d80d761054780269d5754798165"
+    }
+  ],
+  "claims": [
+    {
+      "id": "c_name",
+      "label": "Engineer",
+      "fieldKey": "engineerName",
+      "valueType": "string",
+      "claimedValue": "Ananya",
+      "citation": {
+        "sourceId": "iam",
+        "excerpt": "principal: Ananya",
+        "required": true,
+        "valueAfter": "principal:"
+      }
+    },
+    {
+      "id": "c_role",
+      "label": "AWS IAM role",
+      "fieldKey": "awsIamRole",
+      "valueType": "string",
+      "claimedValue": "PowerUser",
+      "citation": {
+        "sourceId": "iam",
+        "excerpt": "role: PowerUser",
+        "required": true,
+        "valueAfter": "role:"
+      }
+    },
+    {
+      "id": "c_tier",
+      "label": "Hardware tier",
+      "fieldKey": "hardwareTier",
+      "valueType": "string",
+      "claimedValue": "MacBook_Pro_M4_Max",
+      "citation": {
+        "sourceId": "iam",
+        "excerpt": "hardware_tier: MacBook_Pro_M4_Max",
+        "required": true,
+        "valueAfter": "hardware_tier:"
+      }
+    },
+    {
+      "id": "c_proddb",
+      "label": "Production DB access",
+      "fieldKey": "prodDatabaseAccess",
+      "valueType": "boolean",
+      "claimedValue": false,
+      "citation": {
+        "sourceId": "iam",
+        "excerpt": "prod_db_access: false",
+        "required": true,
+        "valueAfter": "prod_db_access:"
+      }
+    },
+    {
+      "id": "c_yubikey",
+      "label": "YubiKey hardware MFA",
+      "fieldKey": "yubikeyHardwareMfa",
+      "valueType": "boolean",
+      "claimedValue": true,
+      "citation": {
+        "sourceId": "iam",
+        "excerpt": "yubikey_mfa: true",
+        "required": true,
+        "valueAfter": "yubikey_mfa:"
+      }
+    },
+    {
+      "id": "c_indicators",
+      "label": "Indicators delivered",
+      "fieldKey": "indicators",
+      "valueType": "number",
+      "claimedValue": 250000,
+      "citation": {
+        "sourceId": "feed",
+        "excerpt": "indicators_delivered 250000",
+        "required": true,
+        "valueAfter": "indicators_delivered"
+      }
+    },
+    {
+      "id": "c_fresh",
+      "label": "Feed freshness (s)",
+      "fieldKey": "freshnessSec",
+      "valueType": "number",
+      "claimedValue": 45,
+      "citation": {
+        "sourceId": "feed",
+        "excerpt": "feed_freshness_seconds 45",
+        "required": true,
+        "valueAfter": "feed_freshness_seconds"
+      }
+    },
+    {
+      "id": "c_fp",
+      "label": "False positives (%)",
+      "fieldKey": "falsePositivePct",
+      "valueType": "number",
+      "claimedValue": 0.8,
+      "citation": {
+        "sourceId": "feed",
+        "excerpt": "false_positive_pct 0.8",
+        "required": true,
+        "valueAfter": "false_positive_pct"
+      }
+    }
+  ],
+  "policies": {
+    "minEpistemicScore": 100,
+    "allowWithinTolerance": false,
+    "requireAllSourcesHashed": false
+  }
+}

@@ -1,0 +1,33 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# build outputs
+/.next/
+/out/
+/build
+/coverage
+/packages/*/dist
+/packages/cli/studio-dist
+*.tsbuildinfo
+next-env.d.ts
+.vite/
+
+# local runtime state (keys, ledgers, meters)
+.verifact/
+
+# environment
+.env*
+*.pem
+
+# packaging
+*.tgz
+
+# tooling
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.vercel
+AGENTS.md

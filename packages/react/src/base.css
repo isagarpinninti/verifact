@@ -1,0 +1,65 @@
+/* Scoped reset: never leaks into the host application. */
+@layer base {
+  .ec-root,
+  .ec-root *,
+  .ec-root *::before,
+  .ec-root *::after {
+    box-sizing: border-box;
+    border: 0 solid;
+  }
+  .ec-root {
+    font-family: var(--ec-font-sans, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .ec-root button,
+  .ec-root input,
+  .ec-root textarea,
+  .ec-root select {
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    margin: 0;
+  }
+  .ec-root h2,
+  .ec-root p,
+  .ec-root dl,
+  .ec-root dd,
+  .ec-root ul {
+    margin: 0;
+    padding: 0;
+  }
+  .ec-root ul {
+    list-style: none;
+  }
+  .ec-root pre,
+  .ec-root code {
+    font-family: var(--ec-font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  }
+}
+
+@keyframes ec-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ec-animate-in {
+  animation: ec-fade-in 240ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ec-animate-in {
+    animation: none;
+  }
+}
+
+.ec-root input[type="range"] {
+  height: 6px;
+  cursor: pointer;
+}

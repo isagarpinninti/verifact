@@ -1,0 +1,63 @@
+{
+  "name": "@verifact/cli",
+  "version": "0.1.0",
+  "description": "Verifact command line: verify claims against primary-source byte spans, block hallucinations, seal evidence certificates, and run a hash-chained provenance ledger and a self-hosted Studio.",
+  "license": "MIT",
+  "type": "module",
+  "author": {
+    "name": "Sagar Pinninti",
+    "url": "https://github.com/isagarpinninti"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isagarpinninti/verifact.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/isagarpinninti/verifact#readme",
+  "bugs": {
+    "url": "https://github.com/isagarpinninti/verifact/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "hallucination-detection",
+    "provenance",
+    "evidence",
+    "fact-checking",
+    "verification",
+    "cli",
+    "ai-safety",
+    "audit-ledger"
+  ],
+  "bin": {
+    "verifact": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "studio-dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@verifact/core": "^0.1.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0",
+    "@assentra/server": "^0.1.0",
+    "@pactline/core": "^0.1.0"
+  }
+}

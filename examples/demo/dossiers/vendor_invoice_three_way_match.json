@@ -1,0 +1,174 @@
+{
+  "id": "vendor_invoice_three_way_match",
+  "name": "Vendor Invoice Three-Way Match",
+  "version": "1.0.0",
+  "category": "FinOps",
+  "description": "Binds an AI payment summary to the invoice, purchase order and treasury wire feed. Feeds Assentra vendor_payment and Pactline fintech_wire_clearing_rail.",
+  "targetBridge": {
+    "assentraWorkflowId": "vendor_payment",
+    "pactlineContractId": "fintech_wire_clearing_rail",
+    "fieldMappings": {
+      "c_vendor": "vendorName",
+      "c_amount": "amountUsd",
+      "c_risk": "vendorRisk",
+      "c_method": "paymentMethod",
+      "c_match": "threeWayMatch"
+    },
+    "telemetryMappings": {
+      "c_wires": "wires",
+      "c_settle": "settlementSeconds",
+      "c_uptime": "uptimePct"
+    }
+  },
+  "sources": [
+    {
+      "id": "invoice",
+      "title": "Vendor invoice INV-2291",
+      "sourceType": "invoice_ledger",
+      "capturedAtIso": "2026-10-14T09:12:41Z",
+      "content": "INVOICE INV-2291\nVendor: Globex Supplies\nPO Reference: PO-88120\nLine 1: GPU rack hardware x4 ........ $60,500.00\nLine 2: Freight and insurance ........ $1,500.00\nTotal Due: $62,000.00\n",
+      "expectedSha256": "acad96fb157d30eba48493426bf62517ef3cd265041b6596ee0fce70090d2c82"
+    },
+    {
+      "id": "po",
+      "title": "Purchase order PO-88120",
+      "sourceType": "signed_contract",
+      "capturedAtIso": "2026-10-14T09:12:41Z",
+      "content": "PURCHASE ORDER PO-88120\nVendor: Globex Supplies\nApproved Amount: $62,000.00\nTerms: net30\n",
+      "expectedSha256": "439f82f9c0b9b26689f2e3a16a2e7e62a8e89ec9828fd89671005dc9c7d39274"
+    },
+    {
+      "id": "wire",
+      "title": "Treasury wire request and rail telemetry",
+      "sourceType": "bank_wire_feed",
+      "capturedAtIso": "2026-10-14T09:12:41Z",
+      "content": "WIRE-REQ-5530 | Beneficiary: Globex Supplies | Method: wire | Vendor Risk Rating: high | Three-way match: true\nRail telemetry window 2026-10-14\nWires cleared: 800\nSettlement time: 90 s\nRail uptime: 99.98%\n",
+      "expectedSha256": "12a3a0efa5cfff73e7384a41c63b1ac767215f3b78db42caab2eb446f87873f0"
+    }
+  ],
+  "claims": [
+    {
+      "id": "c_vendor",
+      "label": "Vendor",
+      "fieldKey": "vendorName",
+      "valueType": "string",
+      "claimedValue": "Globex Supplies",
+      "citation": {
+        "sourceId": "invoice",
+        "excerpt": "Vendor: Globex Supplies",
+        "required": true,
+        "valueAfter": "Vendor:"
+      }
+    },
+    {
+      "id": "c_amount",
+      "label": "Invoice total (USD)",
+      "fieldKey": "amountUsd",
+      "valueType": "number",
+      "claimedValue": 62000,
+      "citation": {
+        "sourceId": "invoice",
+        "excerpt": "Total Due: $62,000.00",
+        "required": true,
+        "valueAfter": "Total Due:"
+      }
+    },
+    {
+      "id": "c_po",
+      "label": "PO approved amount (USD)",
+      "fieldKey": "poAmountUsd",
+      "valueType": "number",
+      "claimedValue": 62000,
+      "citation": {
+        "sourceId": "po",
+        "excerpt": "Approved Amount: $62,000.00",
+        "required": true,
+        "valueAfter": "Approved Amount:"
+      }
+    },
+    {
+      "id": "c_risk",
+      "label": "Vendor risk tier",
+      "fieldKey": "vendorRisk",
+      "valueType": "string",
+      "claimedValue": "high",
+      "citation": {
+        "sourceId": "wire",
+        "excerpt": "Vendor Risk Rating: high",
+        "required": true,
+        "valueAfter": "Vendor Risk Rating:"
+      }
+    },
+    {
+      "id": "c_method",
+      "label": "Payment method",
+      "fieldKey": "paymentMethod",
+      "valueType": "string",
+      "claimedValue": "wire",
+      "citation": {
+        "sourceId": "wire",
+        "excerpt": "Method: wire",
+        "required": true,
+        "valueAfter": "Method:"
+      }
+    },
+    {
+      "id": "c_match",
+      "label": "Three-way match",
+      "fieldKey": "threeWayMatch",
+      "valueType": "boolean",
+      "claimedValue": true,
+      "citation": {
+        "sourceId": "wire",
+        "excerpt": "Three-way match: true",
+        "required": true,
+        "valueAfter": "Three-way match:"
+      }
+    },
+    {
+      "id": "c_wires",
+      "label": "Wires cleared",
+      "fieldKey": "wires",
+      "valueType": "number",
+      "claimedValue": 800,
+      "citation": {
+        "sourceId": "wire",
+        "excerpt": "Wires cleared: 800",
+        "required": true,
+        "valueAfter": "Wires cleared:"
+      }
+    },
+    {
+      "id": "c_settle",
+      "label": "Settlement time (s)",
+      "fieldKey": "settlementSeconds",
+      "valueType": "number",
+      "claimedValue": 90,
+      "citation": {
+        "sourceId": "wire",
+        "excerpt": "Settlement time: 90 s",
+        "required": true,
+        "valueAfter": "Settlement time:"
+      }
+    },
+    {
+      "id": "c_uptime",
+      "label": "Rail uptime (%)",
+      "fieldKey": "uptimePct",
+      "valueType": "number",
+      "claimedValue": 99.98,
+      "citation": {
+        "sourceId": "wire",
+        "excerpt": "Rail uptime: 99.98%",
+        "tolerancePct": 0.05,
+        "required": true,
+        "valueAfter": "Rail uptime:"
+      }
+    }
+  ],
+  "policies": {
+    "minEpistemicScore": 100,
+    "allowWithinTolerance": true,
+    "requireAllSourcesHashed": false
+  }
+}

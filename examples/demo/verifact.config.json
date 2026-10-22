@@ -1,0 +1,13 @@
+{
+  "name": "verifact-demo",
+  "issuer": {
+    "id": "issuer_local",
+    "name": "Local Issuer"
+  },
+  "trustedIssuers": [],
+  "auth": {
+    "keys": {}
+  },
+  "webhookUrl": "",
+  "allowPrivateNetworks": false
+}
